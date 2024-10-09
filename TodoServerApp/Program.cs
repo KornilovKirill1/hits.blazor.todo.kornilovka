@@ -42,7 +42,7 @@ namespace TodoServerApp
                 .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-            builder.Services.AddScoped<IDataService, MSSQLDataService>();
+            builder.Services.AddScoped<IDataService, MemoryDataService>();
 
             var app = builder.Build();
 
