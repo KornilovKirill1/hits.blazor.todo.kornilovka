@@ -31,12 +31,18 @@
 						<p>@task.Description</p>
 						<p>Дата создания: @task.CreatedDate</p>
 						<p>Дата завершения: @task.FinishDate</p>
-						@foreach (var performer in performers)
+						@if (task.idPerformer != null)
 						{
-							@if (performer.Id == task.idPerformer)
+							@foreach (var performer in performers)
 							{
-								<p>Исполнитель: @performer.Surname @performer.Name @performer.Pantronymic</p>
+								@if (performer.Id == task.idPerformer)
+								{
+									<p>Исполнитель: @performer.Surname @performer.Name @performer.Pantronymic</p>
+								}
 							}
+						} else
+						{
+							<p>Исполнитель:</p>
 						}
 					</div>
 					<div class="card-footer">

@@ -242,7 +242,7 @@ namespace TodoServerApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PerformerItems");
+                    b.ToTable("PerformerItems", (string)null);
 
                     b.HasData(
                         new
@@ -304,7 +304,7 @@ namespace TodoServerApp.Migrations
 
                     b.HasIndex("idPerformer");
 
-                    b.ToTable("TaskItems");
+                    b.ToTable("TaskItems", (string)null);
 
                     b.HasData(
                         new

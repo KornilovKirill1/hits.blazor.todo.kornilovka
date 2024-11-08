@@ -27,12 +27,20 @@ namespace TodoServerApp.Data.Services
 		{
 			if (taskItem.Id == 0)
 			{
-				taskItem.CreatedDate= DateTime.Now;
+				taskItem.CreatedDate = DateTime.Now;
 				await context.TaskItems.AddAsync(taskItem);
 			}
 			else
 			{
-				context.TaskItems.Update(taskItem);
+				var existingTask = await context.TaskItems.FindAsync(taskItem.Id);
+				if (existingTask != null)
+				{
+					// Обновление только определенных полей
+					existingTask.Title = taskItem.Title;
+					existingTask.Description = taskItem.Description;
+					existingTask.FinishDate = taskItem.FinishDate;
+					existingTask.idPerformer = taskItem.idPerformer ?? null;
+				}
 			}
 			await context.SaveChangesAsync();
 		}
