@@ -25,8 +25,27 @@
 		</div>
 		<div class="form-group d-flex justify-content-between m-2">
 			<label class="col-form-label col-3">Дата окончания</label>
-			<InputDate @bind-Value="TaskItem.FinishDate" class="form-control" />
+			<InputDate Type="InputDateType.DateTimeLocal" min="@DateTime.Today.ToString("dd-MM-yyyy")" @bind-Value="TaskItem.FinishDate" class="form-control" />
 			<ValidationMessage For="() => TaskItem.FinishDate" />
+		</div>
+		<div class="form-group d-flex justify-content-between m-2">
+			<label class="col-form-label col-3">Исполнитель</label>
+			<InputSelect class="form-select" aria-label="Default select example" @bind-Value="TaskItem.idPerformer">
+				<option>Выберите исполнителя</option>
+				@if (performers != null)
+				{
+					@foreach (var performer in performers)
+					{	
+						<option value="@performer.Id">
+							@performer.Surname @performer.Name
+						</option>
+					}
+				}
+			</InputSelect>
+			<ValidationMessage For="() => TaskItem.idPerformer" />
+		</div>
+		<div>
+			<InputDate Type="InputDateType.DateTimeLocal" min="@DateTime.Today.ToString("dd-MM-yyyy")" @bind-Value="TaskItem.CreatedDate" style="visibility: hidden" />
 		</div>
 		<div class="btn-group">
 			<button class="btn btn-primary m-2" type="submit">Сохранить</button>
@@ -43,10 +62,15 @@
 
 	[SupplyParameterFromForm]
 	TaskItem? TaskItem { get; set; }
+	PerformerItem? PerformerItem { get; set; }
+
+	IEnumerable<PerformerItem>? performers;
 
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
+		performers = await data.GetAllPerformerAsync();
+
 		if (TaskItem == null)
 		{
 			TaskItem = new();
@@ -56,14 +80,16 @@
 				TaskItem.Id = src.Id;
 				TaskItem.Title = src.Title;
 				TaskItem.Description = src.Description;
+				TaskItem.CreatedDate = src.CreatedDate;
 				TaskItem.FinishDate = src.FinishDate;
+				TaskItem.idPerformer = src.idPerformer;
 			}
 		}
 	}
 
 	async Task ValidSubmit()
 	{
-		await data.SaveAsync(TaskItem!);
+		await data.SaveTaskAsync(TaskItem!);
 		navigate.NavigateTo("/");
 	}
 

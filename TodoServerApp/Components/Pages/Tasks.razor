@@ -6,7 +6,7 @@
 
 <PageTitle>Задачи</PageTitle>
 
-<h1>Мои задачи</h1>
+<h1 class="header">Мои задачи</h1>
 
 <div class="container">
 	@if (tasks == null)
@@ -29,7 +29,15 @@
 					</div>
 					<div class="card-body">
 						<p>@task.Description</p>
-						<p>@task.CreatedDate</p>
+						<p>Дата создания: @task.CreatedDate</p>
+						<p>Дата завершения: @task.FinishDate</p>
+						@foreach (var performer in performers)
+						{
+							@if (performer.Id == task.idPerformer)
+							{
+								<p>Исполнитель: @performer.Surname @performer.Name @performer.Pantronymic</p>
+							}
+						}
 					</div>
 					<div class="card-footer">
 						<a class=" btn btn-primary" href="tasks/@task.Id">Изменить</a>
@@ -45,10 +53,15 @@
 @code {
 	IEnumerable<TaskItem>? tasks;
 
+	PerformerItem? PerformerItem { get; set; }
+
+	IEnumerable<PerformerItem>? performers;
+
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
-		tasks = await data.GetAllAsync();
+		performers = await data.GetAllPerformerAsync();
+		tasks = await data.GetAllTasksAsync();
 	}
 
 	void AddTask()
@@ -58,7 +71,7 @@
 
 	async Task DeleteTask(int id)
 	{
-		await data.DeleteAsync(id);
-		tasks = await data.GetAllAsync();
+		await data.DeleteTaskAsync(id);
+		tasks = await data.GetAllTasksAsync();
 	}
 }

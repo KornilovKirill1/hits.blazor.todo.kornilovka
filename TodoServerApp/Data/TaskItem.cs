@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
 
 namespace TodoServerApp.Data
 {
@@ -11,6 +14,11 @@ namespace TodoServerApp.Data
 		public string? Description { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? FinishDate { get; set; }
+		[AllowNull]
+		public int? idPerformer { get; set; }
+		[AllowNull]
+		[ForeignKey(nameof(idPerformer))]
+		public PerformerItem PerformerItem { get; set; }
 
     }
 }

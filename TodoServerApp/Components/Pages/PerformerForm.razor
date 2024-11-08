@@ -1,0 +1,70 @@
+﻿@page "/performer/add"
+@page "/performers/{Id:int}"
+
+@inject IDataService data
+@inject NavigationManager navigate
+
+@if (PerformerItem != null)
+{
+	<EditForm Model="PerformerItem" FormName="TaskForm" OnValidSubmit="ValidSubmit">
+		<DataAnnotationsValidator />
+		<ValidationSummary />
+
+
+		<h2>Новый исполнитель</h2>
+		<InputNumber @bind-Value="PerformerItem.Id" hidden />
+		<div class="form-group d-flex justify-content-between m-2">
+			<label class="col-form-label col-3">Фамилия</label>
+			<InputText @bind-Value="PerformerItem.Surname" class="form-control" />
+			<ValidationMessage For="() => PerformerItem.Surname" />
+		</div>
+		<div class="form-group d-flex justify-content-between m-2">
+			<label class="col-form-label col-3">Имя</label>
+			<InputText @bind-Value="PerformerItem.Name" class="form-control" />
+			<ValidationMessage For="() => PerformerItem.Name" />
+		</div>
+		<div class="form-group d-flex justify-content-between m-2">
+			<label class="col-form-label col-3">Отчество</label>
+			<InputText @bind-Value="PerformerItem.Pantronymic" class="form-control" />
+			<ValidationMessage For="() => PerformerItem.Pantronymic" />
+		</div>
+		<div class="btn-group">
+			<button class="btn btn-primary m-2" type="submit">Сохранить</button>
+			<a class="btn btn-primary m-2" href="/">Отмена</a>
+		</div>
+	</EditForm>
+}
+
+
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	[SupplyParameterFromForm]
+	PerformerItem? PerformerItem { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		if (PerformerItem == null)
+		{
+			PerformerItem = new();
+			if (Id != 0)
+			{
+				var src = await data.GetPerformerAsync(Id);
+				PerformerItem.Id = src.Id;
+				PerformerItem.Surname = src.Surname;
+				PerformerItem.Name = src.Name;
+				PerformerItem.Pantronymic = src.Pantronymic;
+			}
+		}
+	}
+
+	async Task ValidSubmit()
+	{
+		await data.SavePerformerAsync(PerformerItem!);
+		navigate.NavigateTo("/performer");
+	}
+
+}
